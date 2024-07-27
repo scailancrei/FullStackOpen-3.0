@@ -1,11 +1,12 @@
 import express from "express"
+import cors from 'cors'
 import morgan from "morgan"
-import  data  from "./data.json" with {type: 'json'}
+import  data  from "../data.json" with {type: 'json'}
 
 const app = express()
 app.use(express.json())
 app.use(morgan('tiny'))
-
+app.use(cors())
 
 
 
@@ -44,9 +45,10 @@ app.post("/api/persons", (request, response) => {
     return response.status(404).json({message: 'no number or name inside'})
   }
 
-if (newName.length > 0) {
-  return response.status(400).json({message: 'name already exists try another'})
-}
+  if (newName.length > 0) {
+    response.status(400).json({message: 'name already exists try another'})
+    return
+  }
 
 
 
@@ -67,9 +69,11 @@ if (newName.length > 0) {
 app.delete("/api/persons/:id", (request, response)=>{
     const id = request.params.id
   data.persons = data.persons.filter(person => person.id !== Number(id))
-  response.sendStatus(204).send('sorry')
+  response.status(204).send('sorry')
 
 })
+
+
 
 app.get("/api/info", (request, response) => {
     const date = new Date()
@@ -87,7 +91,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT)
 
 console.log(`Server running on port ${PORT}`)
