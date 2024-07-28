@@ -1,11 +1,13 @@
+import dotenv from 'dotenv'
 import express from "express"
 import cors from 'cors'
 import morgan from "morgan"
 import  data  from "./data.json" with {type: 'json'}
+import Phone from "./models/mongo.js"
 
 
 
-
+dotenv.config()
 const app = express()
 
 app.use(express.json())
@@ -27,7 +29,11 @@ app.get("/api/persons", (request, response) => {
   if (!request) {
     response.sendStatus(404).send({message: 'impossible connect to server'})
   }
-  response.json(data.persons)
+  Phone.find({}).then(result => {
+    response.json(result)
+    Phone.db.close()
+  })
+  
 })
 
 app.get("/api/persons/:id", (request, response) => {
@@ -101,7 +107,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.VITE_PORT || 3001
 app.listen(PORT)
 
 console.log(`Server running on port ${PORT}`)
