@@ -1,9 +1,9 @@
-import mongoose from "mongoose"
 import dotenv from "dotenv"
+import mongoose from "mongoose"
 
 dotenv.config()
 
-const url = process.env.VITE_URL
+const url = process.env.MONGODB_URI
 
 mongoose
   .connect(url)

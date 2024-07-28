@@ -1,4 +1,4 @@
-POST https://fullstackopen-backend-phonebook.vercel.app HTTP/1.1
+POST https://fullstackopen-backend-phonebook.vercel.app/api/persons HTTP/1.1
 Content-Type: application/json
 
 {   
