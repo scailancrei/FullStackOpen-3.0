@@ -3,7 +3,7 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const url = process.env.VITE_URL
+const url = process.env.MONGODB_URI
 
 mongoose
   .connect(url)
