@@ -4,13 +4,18 @@ import morgan from "morgan"
 import  data  from "./data.json" with {type: 'json'}
 
 
+
+
 const app = express()
+
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(express.static('dist'))
 
-
+process.on('uncaughtException', function (err) {
+  console.log(err);
+});
 
 const generateId =() => {
   const newId = data.persons.length > 0 ? Math.floor(Math.random() * 1000) : 0
@@ -19,6 +24,9 @@ const generateId =() => {
 }
 
 app.get("/api/persons", (request, response) => {
+  if (!request) {
+    response.sendStatus(404).send({message: 'impossible connect to server'})
+  }
   response.json(data.persons)
 })
 
