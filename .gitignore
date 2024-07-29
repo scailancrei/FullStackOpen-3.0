@@ -2,8 +2,5 @@ node_modules
 .vercel
 .env
 .env*.local
-
 .env*
-.flaskenv*
-!.env.project
-!.env.vault
+.env*.local
