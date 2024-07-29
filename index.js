@@ -3,17 +3,39 @@ import express from "express"
 import cors from 'cors'
 import morgan from "morgan"
 import  data  from "./data.json" with {type: 'json'}
-import Phone from "./models/mongo.js"
+import mongoose from 'mongoose'
 
 
-
-dotenv.config()
+dotenv.config({path: './.env.local'})
 const app = express()
+
+
+
+
+const url = process.env.MONGODB_URI
+
+mongoose
+  .connect(url)
+  .then((result) => {
+    console.log("connected to MongoDB")
+  })
+  .catch((error) => {
+    console.log("error connecting to MongoDB:", error.message)
+  })
+
+const phoneBookSchema = new mongoose.Schema({
+  name: String,
+  number: Number,
+})
+
+const Phone = mongoose.model("Phone", phoneBookSchema)
+
 
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(cors())
 app.use(express.static('dist'))
+
 
 process.on('uncaughtException', function (err) {
   console.log(err);
@@ -104,6 +126,8 @@ app.get("/api/info", (request, response) => {
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
+
+
 
 app.use(unknownEndpoint)
 
