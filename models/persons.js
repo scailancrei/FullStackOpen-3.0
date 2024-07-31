@@ -15,8 +15,22 @@ mongoose
   })
 
 const personsBookSchema = new mongoose.Schema({
-  name: String,
-  number: Number,
+  name: {
+    type: String,
+    required: [true, "name is required"],
+    minlength: [5, "name must be at least 5 characters."],
+  },
+  number: {
+    type: String,
+    validate: {
+      validator: function (value) {
+        return /\d{2,3}(\-)\d{8,}/.test(value)
+      },
+      message: (props) => `${props.value} is not a valid number`,
+    },
+    minlength: [8, "min values are 8"],
+    required: [true, "number is required"],
+  },
   id: Number,
 })
 

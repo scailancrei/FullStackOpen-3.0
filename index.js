@@ -76,12 +76,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :r
 app.post("/api/persons", (request, response, next) => {
   const body = request.body
 
-  if (!body.name || !body.number) {
-    return response.status(404).send('Name or number cant be empty')
-  }  
-  
-  
-
+  console.log(body)
   Person.findOne({ name: `${body.name}`}).then(result => {
     if (result === null) {
       const newPerson = new Person({
@@ -92,12 +87,13 @@ app.post("/api/persons", (request, response, next) => {
       newPerson.save().then(result => {
         console.log('Note saved')
         response.json(result)
-    })
+    }).catch(error => {
+      next(error)})
   } else {
     response.sendStatus(409)
   }
   }).catch(error => {
-    console.log(error)
+    
     next(error)
   })
 
@@ -167,12 +163,17 @@ app.use(unknownEndpoint)
 
 
 const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
+  console.log(error)
+  
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if(error.name === 'ValidationError'){
+    
+    return response.status(422).json({error: error.message})
   } 
 
+  
   next(error)
 }
 
